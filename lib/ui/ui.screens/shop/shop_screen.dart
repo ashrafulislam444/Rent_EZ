@@ -1,0 +1,296 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/ui.screens/shop/shop_details.dart';
+import 'package:rent_ez/ui/ui.screens/shop/shop_owner.dart';
+import 'package:rent_ez/ui/ui.widgets/background_body.dart';
+
+class ShopScreen extends StatefulWidget {
+  const ShopScreen({super.key});
+
+  @override
+  State<ShopScreen> createState() => _ShopScreenState();
+}
+
+class _ShopScreenState extends State<ShopScreen> {
+
+  String? selectedValue;
+  final List<String> shopitems = [
+    'Barishal', 'Chattogram','Dhaka', 'Khulna', 'Mymensingh', 'Rajshahi', 'Sylhet', 'Rangpur',
+  ];
+
+  final List<String> shopitems1 = [
+    'Ambarkhana', 'Arambagh', 'Bagbari', 'Barutkhana', 'Bondar', 'Chowhatta', 'Chowkidekhi', 'Dariapara', 'Dorga Gate', 'Electric Supply', 'Fazil Chisth', 'Hawapara',
+    'Housing Estate', 'Jollarpar', 'Kazir Bazar', 'Kazitula', 'Korer Para', 'Kumar para', 'Kuar par', 'Lama Bazar', 'Londoni Road', 'Laladigir par', 'Mezor Tila', 'Mirabazar',
+    'Munshi Para', 'Mirboxtula', 'Mirer Maidan', 'Modina Market', 'Noyasorok', 'Osmani Medical', 'Pathantula',
+    'Payra', 'Pir Moholla', 'Rikabi Bazar', 'Subidbazar', 'Sekhghat', 'Shahi Eidgah', 'Shibgonj', 'Subhanighat', 'Tilaghar', 'Uposhohar A Block', 'Uposhohar B Block', 'Uposhohar C Block',
+    'Uposhohar D Block', 'Uposhohar E Block', 'Uposhohar G Block', 'Uposhohar H Block', 'Uposhohar Plaza', 'Uposhohor', 'Zindabazar',
+
+  ];
+
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: Image.asset('assets/images/Shop.png',
+         // height: 180,
+          fit: BoxFit.cover,
+        ),
+
+        toolbarHeight: 100,
+        elevation: 15,
+        backgroundColor: Colors.grey,
+      ),
+      body: BackgroundBody(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child:SingleChildScrollView(
+              child:SizedBox(
+
+                //height:5000,
+                //width: 1000,
+
+                child: Column(
+                  children: [
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton2<String>(
+                            isExpanded: true,
+                            hint: Text(
+                              'Select Your City',
+                              style: TextStyle(
+                                fontSize:15,
+                                fontWeight: FontWeight.w900,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                            items: shopitems
+                                .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ))
+                                .toList(),
+                            value: selectedValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedValue = value;
+                              });
+                            },
+                            buttonStyleData: const ButtonStyleData(
+                              padding: EdgeInsets.symmetric(horizontal:16),
+                              height: 80,
+                              width: 150,
+                            ),
+                            menuItemStyleData: const MenuItemStyleData(
+                              height: 40,
+                            ),
+                          ),
+                        ),
+
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context,MaterialPageRoute(
+                                builder:(context) => const ShopOwner()),
+                            );
+                          },
+                          child:const Text('Shop Owner',style: TextStyle(
+                            fontSize:15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),),
+
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(15.0),
+                            fixedSize: Size(80,70),
+                            elevation: 20,
+                            primary: Colors.amber,
+                            onPrimary: Colors.white,
+                            side: BorderSide(color: Colors.black26,width:3),
+
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton2<String>(
+                            isExpanded: true,
+                            hint: Text(
+                              'Select Your Area',
+                              style: TextStyle(
+                                fontSize:15,
+                                fontWeight: FontWeight.w900,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                            items: shopitems1
+                                .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ))
+                                .toList(),
+                            value: selectedValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedValue = value;
+                              });
+                            },
+                            buttonStyleData: const ButtonStyleData(
+                              padding: EdgeInsets.symmetric(horizontal:16),
+                              height: 80,
+                              width: 150,
+                            ),
+                            menuItemStyleData: const MenuItemStyleData(
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Column(
+                      children: [
+                        Text('View All',style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.black,
+                        ),)
+                      ],
+                    ),
+
+                    const SizedBox(height:10,),
+                    shopList,
+
+                  ],
+                ),
+              ),
+            ),
+
+          ),
+        ),
+
+      ),
+
+    );
+  }
+
+  SizedBox get shopList {
+    return SizedBox(
+      //height:400,
+      //width:500,
+      child: ListView.separated(
+        itemCount: 30,
+        primary: false,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context,index) {
+          return SizedBox(
+            height: 150,
+            width: 10,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 10,
+              child:Row(
+
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('assets/images/Shop.png',width: 120,),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20,),
+                        Row(
+                          children: [
+                            Icon(Icons.location_on,color: Colors.blue,),
+                            Text('Subidbazer,Sylhet',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                              ),),
+                          ],
+                        ),
+                        const SizedBox(height:5 ,),
+                        Row(
+                          children: [
+                            Icon(Icons.phone,color: Colors.grey,),
+                            Text('01782163624',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                              ),),
+                          ],
+                        ),
+
+                        const SizedBox(height: 5,),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context,MaterialPageRoute(
+                                builder:(context) => const ShopDetails()),
+                            );
+                          },
+                          child:const Text('Details',style: TextStyle(
+                            fontSize:15,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),),
+
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(5.0),
+                            fixedSize: Size(20,30),
+                            elevation: 5,
+                            primary: Colors.blueGrey,
+                            onPrimary: Colors.white,
+                            side: BorderSide(color: Colors.black26,width:2),
+
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+
+            ),
+          );
+        },
+
+        separatorBuilder: (_,__){
+          return const SizedBox(
+            height:10,
+          );
+        },
+      ),
+    );
+  }
+}
