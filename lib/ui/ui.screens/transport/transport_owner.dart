@@ -14,7 +14,7 @@ class _TransportOwnerState extends State<TransportOwner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Image.asset('assets/images/Transport.png',
+        flexibleSpace: Image.asset('assets/images/Transport Owner.png',
           // height: 180,
           fit: BoxFit.cover,
         ),

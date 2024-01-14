@@ -14,7 +14,7 @@ class _GarageOwnerState extends State<GarageOwner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Image.asset('assets/images/Garage.png',
+        flexibleSpace: Image.asset('assets/images/Garage Owner.png',
           // height: 180,
           fit: BoxFit.cover,
         ),
