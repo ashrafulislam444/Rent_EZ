@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/ui.screens/contact_screen.dart';
 import 'package:rent_ez/ui/ui.screens/update_profile_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
@@ -16,7 +17,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
 
         flexibleSpace: Image.asset('assets/images/Settings.png',
-         // height: 180,
+          // height: 180,
           fit: BoxFit.fill,
         ),
 
@@ -81,7 +82,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               //width: double.infinity,
               child:ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => const ContactScreen()),
+                  );
+                },
                 child:const Text('Contact',style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -145,22 +149,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
-
-
-
-
           ],
-
-
-
-
-
         ),
-
       ),
-
-
-
     );
   }
 }
