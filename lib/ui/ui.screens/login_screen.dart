@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/feature/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:rent_ez/ui/ui.screens/forgot_password_screen.dart';
-import 'package:rent_ez/ui/ui.screens/home_screen.dart';
 import 'package:rent_ez/ui/ui.screens/sign_up_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
+import 'package:rent_ez/ui/ui.widgets/toast.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -11,6 +13,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  bool _isSigning = false;
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height:50,),
 
                   TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Email',
@@ -40,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 30,),
 
                   TextFormField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Password',
@@ -51,11 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     child:ElevatedButton(
                       onPressed: () {
-                       Navigator.push(context,MaterialPageRoute(
-                           builder:(context) => const HomeScreen()),
-                       );
+                        _signIn();
                       },
-                      child:const Text('Continue',style: TextStyle(
+                      child:const Text('Sign In',style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),),
@@ -92,16 +111,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: (){
                           Navigator.push(context,
                             MaterialPageRoute(builder:(context) => const SignUpScreen(),
-                          ),
+                            ),
                           );
                         },
                         child:  Text('Sign Up',style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
+                          color: Colors.green,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
 
-                      ),
-                      ),
+                        ),
+                        ),
                       ),
                     ],
                   )
@@ -116,4 +135,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
     );
   }
+
+  void _signIn() async {
+    setState(() {
+      _isSigning = true;
+    });
+
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    setState(() {
+      _isSigning = false;
+    });
+
+    if (user != null) {
+      showToast(message: "User is successfully signed in");
+      Navigator.pushNamed(context, "/home");
+    } else {
+      showToast(message: "some error occured");
+    }
+  }
+
 }

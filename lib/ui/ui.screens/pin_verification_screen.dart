@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rent_ez/ui/ui.screens/login_screen.dart';
 import 'package:rent_ez/ui/ui.screens/reset_password_screen.dart';
-import 'package:rent_ez/ui/ui.screens/sign_up_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
+
+
+
 class PinVarification extends StatefulWidget {
   const PinVarification({super.key});
 
@@ -67,7 +69,7 @@ class _PinVarificationState extends State<PinVarification> {
 
                     },
                     beforeTextPaste: (text) {
-                     return true;
+                      return true;
                     },
                     appContext: context,
                   ),

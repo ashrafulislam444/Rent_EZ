@@ -3,7 +3,7 @@ import 'package:rent_ez/ui/ui.screens/login_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({super.key, required child});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -18,14 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
     goToLogin();
   }
 
-
-  //create a meathod
 void goToLogin(){
   Future.delayed(const Duration(seconds:3)).then((value) {
 Navigator.pushAndRemoveUntil(context,
     MaterialPageRoute(builder: (context) => const LoginScreen()),
     (route) => false);
-
   });
 }
 

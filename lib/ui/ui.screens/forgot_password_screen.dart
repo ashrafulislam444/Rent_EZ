@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/ui.screens/pin_verification_screen.dart';
-import 'package:rent_ez/ui/ui.screens/sign_up_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});

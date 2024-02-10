@@ -76,9 +76,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
 
 
-
-
-
                   const SizedBox(height:25,),
 
                   TextFormField(

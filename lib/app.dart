@@ -9,10 +9,9 @@ class RentEzApp extends StatelessWidget{
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner:false,
-      home: const SplashScreen(),
+      home: const SplashScreen(child: null,),
       theme: ThemeData(
         inputDecorationTheme: InputDecorationTheme(
-
             fillColor: Colors.black12,
             filled: true,
             border: OutlineInputBorder(

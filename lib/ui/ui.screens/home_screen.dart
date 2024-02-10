@@ -21,8 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
 
         flexibleSpace: Image.asset('assets/images/Rent EZ home screen.png',
-       height: 160,
-        fit: BoxFit.cover,
+          height: 160,
+          fit: BoxFit.cover,
         ),
 
         toolbarHeight: 130,
@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body:BackgroundBody(
         child: Column(
           children: [
-           Row(
+            Row(
               children: [
                 const SizedBox(height:300,width: 15,),
                 ElevatedButton(

@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/ui.screens/contact_screen.dart';
+import 'package:rent_ez/ui/ui.screens/feedback_screen.dart';
 import 'package:rent_ez/ui/ui.screens/update_profile_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
+import 'package:rent_ez/ui/ui.widgets/toast.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -59,7 +62,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               //width: double.infinity,
               child:ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,MaterialPageRoute(builder:(context) => const FeedbackScreen()),
+                  );
+                },
                 child:const Text('Feedback',style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -131,7 +137,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               //width: double.infinity,
               child:ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushNamed(context, "/login");
+                  showToast(message: "Successfully signed out");
+                },
                 child:const Text('Log Out',style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

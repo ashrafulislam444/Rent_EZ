@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/ui.screens/login_screen.dart';
-import 'package:rent_ez/ui/ui.screens/pin_verification_screen.dart';
-import 'package:rent_ez/ui/ui.screens/sign_up_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -63,7 +61,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     width: double.infinity,
                     child:ElevatedButton(
                       onPressed: () {
-                      Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder:(context) => const LoginScreen()), (route) => false);
+                        Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder:(context) => const LoginScreen()), (route) => false);
                       },
                       child:const Text('Confirm',style: TextStyle(
                         fontSize: 20,

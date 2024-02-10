@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
@@ -13,25 +14,35 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Contact',style: TextStyle(
+          color: Colors.amber,
+          fontSize:30,
+          fontWeight: FontWeight.w900,
+        ),),
+        elevation: 20,
+        toolbarHeight:80,
+        backgroundColor:Colors.black54,
+
+      ),
       body: BackgroundBody(
         child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child:Column(
-                  children: [
-                    const SizedBox(height: 150,),
-                    Text('Contact with rentEZ Team',style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black,
-                    ),),
+          child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child:Column(
+                children: [
+                  const SizedBox(height: 100,),
+                  Text('Contact with rentEZ Team',style: TextStyle(
+                    fontSize:20,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black54,
+                  ),),
 
-
-                    const SizedBox(height:25,),
-                    boxList,
-                  ],
-                )
-              ),
+                  const SizedBox(height:25,),
+                  boxList,
+                ],
+              )
+          ),
 
         ),
       ),
@@ -75,29 +86,29 @@ class _ContactScreenState extends State<ContactScreen> {
                               Icon(Icons.email,color: Colors.deepPurple,),
                               const SizedBox(width: 10,),
                               Text('rentEZ@gmail.com',style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blueGrey
                               ),),
                             ],
                           ),
                         ),
 
 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.phone,color: Colors.deepPurple,),
-                                const SizedBox(width: 10,),
-                                Text('01782163624',style: TextStyle(
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(Icons.phone,color: Colors.deepPurple,),
+                              const SizedBox(width: 10,),
+                              Text('01782163624',style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blueGrey
-                                ),),
-                              ],
-                            ),
+                              ),),
+                            ],
                           ),
+                        ),
 
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -145,18 +156,6 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
