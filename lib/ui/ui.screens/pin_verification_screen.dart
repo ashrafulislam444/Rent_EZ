@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rent_ez/ui/ui.screens/login_screen.dart';
@@ -7,13 +10,21 @@ import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 
 class PinVarification extends StatefulWidget {
-  const PinVarification({super.key});
+  String verificationid;
+
+  PinVarification({super.key,required this.verificationid});
 
   @override
   State<PinVarification> createState() => _PinVarificationState();
 }
 
 class _PinVarificationState extends State<PinVarification> {
+
+  TextEditingController otpController =TextEditingController();
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +45,7 @@ class _PinVarificationState extends State<PinVarification> {
 
                   const SizedBox(height:20),
 
-                  Text('A 6 digit verification pin will send to your email address',
+                  Text('A 6 digit verification pin will send to your phone number',
                     style:TextStyle(
                       fontSize: 15,
                       color: Colors.black12,
@@ -46,13 +57,15 @@ class _PinVarificationState extends State<PinVarification> {
                   const SizedBox(height:40,),
 
                   PinCodeTextField(
+                    controller: otpController,
+                    keyboardType: TextInputType.phone,
                     length: 6,
                     obscureText: false,
                     animationType: AnimationType.fade,
                     pinTheme: PinTheme(
                       shape: PinCodeFieldShape.box,
                       borderRadius: BorderRadius.circular(5),
-                      fieldHeight: 50,
+                      fieldHeight:50,
                       fieldWidth: 45,
                       activeFillColor: Colors.white,
                       activeColor: Colors.green,
@@ -79,14 +92,21 @@ class _PinVarificationState extends State<PinVarification> {
                   SizedBox(
                     width: double.infinity,
                     child:ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(builder:(context) => const ResetPassword(),
-                          ),
-                        );
+                      onPressed: () async {
+                        try{
+                          PhoneAuthCredential credential = await PhoneAuthProvider.credential(
+                              verificationId: widget.verificationid,
+                              smsCode:otpController.text.toString());
+                          FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ResetPassword()));
+                          });
+
+                        } catch (ex){
+                          log(ex.toString());
+                        }
 
                       },
-                      child:const Text('Verify'),
+                      child:const Text('Verify OTP'),
                     ),
                   ),
 

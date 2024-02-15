@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/feature/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
+import 'package:rent_ez/ui/ui.screens/login_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
-import 'package:rent_ez/ui/ui.widgets/toast.dart';
 class SignUpScreen extends StatefulWidget{
   const SignUpScreen({super.key});
 
@@ -15,12 +18,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _newPasswordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _PasswordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   bool isSigningUp = false;
 
@@ -30,8 +34,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
+    _PasswordController.dispose();
+
     super.dispose();
   }
 
@@ -45,118 +49,165 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child:Padding(
             padding: const EdgeInsets.all(25.0),
             child:SingleChildScrollView(
-              child:Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              child:Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-                  const SizedBox(height: 10,),
-                  Text('Create a new account',
-                    style:TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-
-
-                  const SizedBox(height:25,),
-
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  TextFormField(
-                    controller: _firstNameController,
-                    decoration: InputDecoration(
-                      hintText: 'First Name',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Last Name',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  TextFormField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      hintText: 'Phone',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  TextFormField(
-                    controller: _newPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'New Password',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-                  SizedBox(
-                    width: double.infinity,
-                    child:ElevatedButton(
-                      onPressed: () {
-                       _signUp();
-                      },
-                      child:const Text('Sign Up',style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight:FontWeight.bold,
-                      ),),
-                    ),
-                  ),
-
-                  const SizedBox(height:25),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Already have an account?",style: TextStyle(
-                        color: Colors.grey,
+                    const SizedBox(height: 10,),
+                    Text('Create a new account',
+                      style:TextStyle(
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ), ),
-                      TextButton(
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },child: Text('Sign In',style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
+                        color: Colors.black87,
+                      ),
+                    ),
 
+
+                    const SizedBox(height:25,),
+
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
                       ),
+                      validator: (String? value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Eneter an email';
+                        }
+
+                        bool emailValid = RegExp(
+                            r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                            .hasMatch(value!);
+                        if (emailValid == false) {
+                          return 'Enter valid Email';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+
+                    TextFormField(
+                      controller: _firstNameController,
+                      decoration: const InputDecoration(
+                        hintText: 'First Name',
                       ),
+                      validator: (String? value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Eneter your First Name';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+
+                    TextFormField(
+                      controller: _lastNameController,
+                      decoration: const InputDecoration(
+                        hintText: 'Last Name',
                       ),
-                    ],
-                  )
-                ],
+                      validator: (String? value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Eneter your Last Name';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        hintText: 'Mobile',
+                      ),
+                      validator: (String? value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Eneter valid Phone Number';
+                        }
+
+                        bool validPhone =
+                        RegExp(r'^01[3-9][0-9]{8}$').hasMatch(value!);
+
+                        /// 11 digit and start with 019,017,018 etc
+                        if (validPhone == false) {
+                          return 'Enter valid Phone Number';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+
+                    TextFormField(
+                      controller: _PasswordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Passwords',
+                      ),
+                      validator: (String? value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Eneter a Password';
+                        }
+                        if (value!.length < 6) {
+                          return 'Enter Password more than 6 letters';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+                    SizedBox(
+                      width: double.infinity,
+                      child:ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _signUp();
+                            return;
+                          }
+                        },
+                        child: isSigningUp ? CircularProgressIndicator(color: Colors.white,): Text(
+                          'Sign Up',
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight:FontWeight.bold,
+                        ),),
+                      ),
+                    ),
+
+                    const SizedBox(height:25),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Already have an account?",style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ), ),
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },child: Text('Sign In',style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+
+                        ),
+                        ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
 
             ),
@@ -178,22 +229,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String firstname = _firstNameController.text;
     String lastname = _lastNameController.text;
     String phone = _phoneController.text;
-    String newpassword = _newPasswordController.text;
-    String confirmpassword = _confirmPasswordController.text;
+    String password = _PasswordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, newpassword,);
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password,);
 
     setState(() {
       isSigningUp = false;
     });
     if (user != null) {
       showToast(message: "User is successfully created");
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } else {
-      showToast(message: "Some error happend");
+      showToast(message: "Some error happened");
     }
   }
-
-
-
 }

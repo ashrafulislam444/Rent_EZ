@@ -47,14 +47,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                   ),
 
-                  const SizedBox(height: 20,),
-
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                    ),
-                  ),
-
                   const SizedBox(height: 50,),
 
                   SizedBox(
@@ -63,7 +55,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder:(context) => const LoginScreen()), (route) => false);
                       },
-                      child:const Text('Confirm',style: TextStyle(
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(
                         fontSize: 20,
                         fontWeight:FontWeight.bold,
                       ),),

@@ -1,4 +1,6 @@
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_ez/app.dart';
@@ -21,25 +23,26 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget{
+
   const MyApp({Key? Key}) : super(key: Key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => SplashScreen(
+        '/': (context) => const SplashScreen(
 
           child: LoginScreen(),
         ),
-        '/login': (context) => LoginScreen(),
-        '/signUp': (context) => SignUpScreen(),
-        '/home': (context) => HomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/signUp': (context) => const SignUpScreen(),
+        '/home': (context) => const HomeScreen(),
       },
+
+
     );
 
-
   }
-
 }
 
 

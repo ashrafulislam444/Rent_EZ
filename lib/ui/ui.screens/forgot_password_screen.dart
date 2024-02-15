@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_ez/ui/ui.screens/pin_verification_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
@@ -9,6 +10,39 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  TextEditingController _emailController = TextEditingController();
+
+  Future passwordReset() async {
+    try {
+      print(_emailController);
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text.trim());
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                'Password Reset Link Sent to Your Email',
+              ),
+            );
+          });
+
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                e.message.toString(),
+              ),
+            );
+          });
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +75,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   const SizedBox(height:50,),
 
                   TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Email',
@@ -52,10 +87,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     width: double.infinity,
                     child:ElevatedButton(
                       onPressed: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(builder:(context) => const PinVarification(),
-                          ),
-                        );
+                        passwordReset();
+                        // Navigator.push(context,
+                        //   MaterialPageRoute(builder:(context) => const PinVarification(),
+                        //   ),
+                        // );
                       },
                       child:const Text('Continue',style: TextStyle(
                         fontSize: 20,
