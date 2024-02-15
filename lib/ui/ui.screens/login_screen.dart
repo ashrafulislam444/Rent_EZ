@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(builder:(context) => const ForgotPassword(),
                           ),
                         );
-                      },child:  Text('Forgate Password?',style: TextStyle(
+                      },child:  Text('Forgot Password?',style: TextStyle(
                       color: Colors.grey,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

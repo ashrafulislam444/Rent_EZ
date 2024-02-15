@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/ui.screens/settings_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -9,6 +12,86 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _PasswordController = TextEditingController();
+
+
+
+  late User currentUser;
+
+  String? userID;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    getUserID();
+
+  }
+
+  Future<void> getUserID() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUser = user;
+      });
+      showUserData();
+    }
+  }
+  Future<void> showUserData() async {
+    String userID = currentUser.uid;
+    var userDoc =
+    await FirebaseFirestore.instance.collection('userid').doc(userID).get();
+
+
+    if (userDoc.exists) {
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      setState(() {
+        _firstNameController.text = userData['firstName'] ?? '';
+        _lastNameController.text= userData['lastName']?? '';
+        _emailController.text = userData['email'] ?? '';
+        _phoneController.text = userData['phone'] ?? '';
+        _PasswordController.text = userData['password'] ?? '';
+      });
+    }
+
+  }
+
+
+  Future<void> updateUserDetails() async {
+    String userID = currentUser.uid;
+
+
+    var userDoc =
+    await FirebaseFirestore.instance.collection('userid').doc(userID).get();
+
+    if (userDoc.exists) {
+      await FirebaseFirestore.instance.collection('userid').doc(userID).update({
+        'email': _emailController.text,
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'phone': _phoneController.text,
+        'password': _PasswordController.text,
+      });
+    } else {
+      await FirebaseFirestore.instance.collection('userid').doc(userID).set({
+        'email': _emailController.text,
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'phone': _phoneController.text,
+        'password': _PasswordController.text,
+      });
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,60 +108,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       body: BackgroundBody(
         child: SafeArea(
           child: Padding(
-           padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: SingleChildScrollView(
               child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  const SizedBox(height:20,),
-
-                  Container(
-                    height: 50,
-                    //width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.black26,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                            child: Container(
-                              height: 50,
-                             // width: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.black26,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  bottomLeft: Radius.circular(8),
-                                )
-                              ),
-
-                              alignment: Alignment.center,
-                              child: const Text('Photo',style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),),
-
-                            )),
-                        Expanded(
-                            flex:3,
-                            child: Container(
-                              padding: EdgeInsets.only(left: 50),
-                              child: Text('Select a photo',style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold
-                              ),),
-                            )),
-                      ],
-                    ),
-                  ),
-
 
                   const SizedBox(height:25,),
 
                   TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Email',
@@ -88,6 +127,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 20,),
 
                   TextFormField(
+                    controller: _firstNameController,
                     decoration: InputDecoration(
                       hintText: 'First Name',
                     ),
@@ -96,6 +136,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 20,),
 
                   TextFormField(
+                    controller: _lastNameController,
                     decoration: InputDecoration(
                       hintText: 'Last Name',
                     ),
@@ -104,6 +145,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 20,),
 
                   TextFormField(
+                    controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       hintText: 'Phone',
@@ -113,6 +155,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 20,),
 
                   TextFormField(
+                    controller: _PasswordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Password',
@@ -124,7 +167,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   SizedBox(
                     width: double.infinity,
                     child:ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        updateUserDetails();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return SettingsScreen();
+                          }),
+                        );
+
+                      },
                       child:const Text('Continue',style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -141,20 +193,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         shape:StadiumBorder(),
 
                       ),
-
-
                     ),
                   ),
                 ],
               ),
             ),
 
+          ),
+
         ),
-
       ),
-      ),
-
-
     );
   }
 }

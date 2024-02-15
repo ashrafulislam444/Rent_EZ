@@ -31,49 +31,40 @@ class _TransportOwnerState extends State<TransportOwner> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Stack(
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        height: 80,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(60),
+                            color: Colors.indigo,
+                          ),
+                          child: const Icon(Icons.cloud_upload,
+                              color: Colors.white70, size: 50),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Upload a Picture',style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
 
-                  const SizedBox(height:20,),
-                  Container(
-                    height: 100,
-                    //width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.black26,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: Container(
-                              height: 100,
-                              //width: 500,
-                              decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    bottomLeft: Radius.circular(8),
-                                  )
-                              ),
-
-                              alignment: Alignment.center,
-                              child: const Text('Photo',style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight:FontWeight.w900,
-                              ),),
-
-                            )),
-                        Expanded(
-                            flex:3,
-                            child: Container(
-                              padding: EdgeInsets.only(left: 50),
-                              child: Text('Select a photo',style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold
-                              ),),
-                            )),
-                      ],
-                    ),
+                      ),),
+                    ],
                   ),
 
                   const SizedBox(height: 50,),

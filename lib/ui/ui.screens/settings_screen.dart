@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               //width: double.infinity,
               child:ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,MaterialPageRoute(builder:(context) => const UpdateProfileScreen()),
+                  Navigator.push(context,MaterialPageRoute(builder:(context) =>  UpdateProfileScreen()),
                   );
                 },
                 child:const Text('Update Profile',style: TextStyle(

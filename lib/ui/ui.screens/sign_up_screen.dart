@@ -1,29 +1,27 @@
-// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:rent_ez/ui/feature/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.screens/login_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
-class SignUpScreen extends StatefulWidget{
-  const SignUpScreen({super.key});
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
-  final FirebaseAuthService _auth = FirebaseAuthService();
-
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
 
   bool isSigningUp = false;
@@ -39,34 +37,97 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  Future<void> _signUp(String email, String firstName, String lastName,
+      String phone,  String password) async {
 
+    setState(() {
+      isSigningUp = true;
+    });
+
+    try {
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      await userCredential.user?.updateDisplayName(firstName);
+
+      await FirebaseFirestore.instance
+          .collection('userid')
+          .doc(userCredential.user?.uid)
+          .set({
+        'email': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'phone': phone,
+        'password': password,
+      });
+
+
+      setState(() {
+        isSigningUp = false;
+      });
+
+
+
+      if (userCredential != null) {
+        showToast(message: "User is successfully created");
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      } else {
+        showToast(message: "Some error happened");
+      }
+
+
+
+
+    } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Registration Failed"),
+            content: Text(e.message ?? "An error occurred."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BackgroundBody(
-        child:SafeArea(
-          child:Padding(
+        child: SafeArea(
+          child: Padding(
             padding: const EdgeInsets.all(25.0),
-            child:SingleChildScrollView(
-              child:Form(
+            child: SingleChildScrollView(
+              child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    const SizedBox(height: 10,),
-                    Text('Create a new account',
-                      style:TextStyle(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Create a new account',
+                      style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
                     ),
-
-
-                    const SizedBox(height:25,),
-
+                    const SizedBox(
+                      height: 25,
+                    ),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -88,9 +149,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-
-                    const SizedBox(height: 20,),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextFormField(
                       controller: _firstNameController,
                       decoration: const InputDecoration(
@@ -103,9 +164,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-
-                    const SizedBox(height: 20,),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextFormField(
                       controller: _lastNameController,
                       decoration: const InputDecoration(
@@ -118,9 +179,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-
-                    const SizedBox(height: 20,),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextFormField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
@@ -143,9 +204,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-
-                    const SizedBox(height: 20,),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextFormField(
                       controller: _PasswordController,
                       obscureText: true,
@@ -162,87 +223,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     SizedBox(
                       width: double.infinity,
-                      child:ElevatedButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _signUp();
+                            _signUp(
+                                _emailController.text.trim(),
+                                _firstNameController.text.trim(),
+                                _lastNameController.text.trim(),
+                                _phoneController.text.trim(),
+                                _PasswordController.text.trim());
                             return;
                           }
                         },
-                        child: isSigningUp ? CircularProgressIndicator(color: Colors.white,): Text(
+                        child: isSigningUp ? CircularProgressIndicator(
+                          color: Colors.white,) : Text(
                           'Sign Up',
                           style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight:FontWeight.bold,
-                        ),),
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-
-                    const SizedBox(height:25),
-
+                    const SizedBox(height: 25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Already have an account?",style: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ), ),
+                        Text(
+                          "Already have an account?",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
                         TextButton(
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.pop(context);
-                          },child: Text('Sign In',style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-
-                        ),
-                        ),
+                          },
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
                         ),
                       ],
                     )
                   ],
                 ),
               ),
-
             ),
-
           ),
         ),
       ),
-
     );
-  }
-
-  void _signUp() async {
-
-    setState(() {
-      isSigningUp = true;
-    });
-
-    String email = _emailController.text;
-    String firstname = _firstNameController.text;
-    String lastname = _lastNameController.text;
-    String phone = _phoneController.text;
-    String password = _PasswordController.text;
-
-
-    User? user = await _auth.signUpWithEmailAndPassword(email, password,);
-
-    setState(() {
-      isSigningUp = false;
-    });
-    if (user != null) {
-      showToast(message: "User is successfully created");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
-    } else {
-      showToast(message: "Some error happened");
-    }
   }
 }
