@@ -114,7 +114,6 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                           transportRent: int.parse(transportRentController.text),
                           transportNo:transportNoController.text,
                           areaDetails:areaDetailsController.text,
-
                         );
 
                         transportAddDetails(user);
@@ -137,19 +136,12 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             ),
-
           ),
         ),
-
       ),
-
-
-
     );
   }
 
@@ -172,8 +164,8 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
 
 class User{
   final String description;
-  final int transportRent;
   final String transportNo;
+  final int transportRent;
   final String areaDetails;
 
 
@@ -191,3 +183,6 @@ class User{
     'areaDetails':areaDetails,
   };
 }
+
+
+

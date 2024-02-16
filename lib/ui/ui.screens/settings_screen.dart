@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           children: [
 
-            const SizedBox(height: 40,width: 400,),
+            const SizedBox(height: 120,width: 400,),
             SizedBox(
               //width: double.infinity,
               child:ElevatedButton(
@@ -95,29 +95,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   );
                 },
                 child:const Text('Contact',style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),),
-
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10.0),
-                  fixedSize: Size(250,50),
-                  elevation: 20,
-                  primary: Colors.green,
-                  onPrimary: Colors.white,
-                  side: BorderSide(color: Colors.lightGreen,width:3),
-                  shape:StadiumBorder(),
-
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 40,width: 400,),
-            SizedBox(
-              //width: double.infinity,
-              child:ElevatedButton(
-                onPressed: () {},
-                child:const Text('FAQ',style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),),
