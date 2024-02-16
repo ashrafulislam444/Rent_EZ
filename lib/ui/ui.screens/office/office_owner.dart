@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.screens/office/office_add_details.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
@@ -10,6 +12,19 @@ class OfficeOwner extends StatefulWidget {
 }
 
 class _OfficeOwnerState extends State<OfficeOwner> {
+
+
+  final TextEditingController addressController =TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    addressController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +91,7 @@ class _OfficeOwnerState extends State<OfficeOwner> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: TextFormField(
+                      controller: addressController,
                       decoration: InputDecoration(
                           hintText: 'Address'
                       ),
@@ -85,6 +101,8 @@ class _OfficeOwnerState extends State<OfficeOwner> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: TextFormField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
                       decoration:InputDecoration(
                         hintText: 'Phone',
                       ),
@@ -92,26 +110,59 @@ class _OfficeOwnerState extends State<OfficeOwner> {
                   ),
 
                   const SizedBox(height: 5,),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,MaterialPageRoute(
-                          builder:(context) => const OfficeAddDetails()),
-                      );
-                    },
-                    child:const Text('Add Details',style: TextStyle(
-                      fontSize:17,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final user = User(
+                          address:addressController.text,
+                          phone:int.parse(phoneController.text),
+                        );
 
-                    style: ElevatedButton.styleFrom(
-                      //padding: EdgeInsets.all(5.0),
-                      fixedSize: Size(100,50),
-                      elevation: 5,
-                      primary: Colors.blueGrey,
-                      onPrimary: Colors.white,
-                      side: BorderSide(color: Colors.black26,width:2),
+                        officeOwner(user);
+                        //Navigator.pop(context);
 
+                      },
+                      child: const Text('Submit',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.green,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 50,),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context,MaterialPageRoute(
+                            builder:(context) => const OfficeAddDetails()),
+                        );
+                      },
+                      child:const Text('Add Details',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.blueGrey,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
+                      ),
                     ),
                   ),
                 ],
@@ -129,4 +180,35 @@ class _OfficeOwnerState extends State<OfficeOwner> {
 
     );
   }
+
+  Future officeOwner (User user) async {
+
+    try {
+      final docUser = FirebaseFirestore.instance.collection('Office Owner').doc();
+      showToast(message: " Submit Successful");
+
+      final office = user.toOffice();
+      await docUser.set(office);
+
+    } catch (e) {
+      showToast(message: 'some error occurred ');
+    }
+
+  }
+
+}
+
+class User{
+  final String address;
+  final int phone;
+
+  User({
+    required this.address,
+    required this.phone,
+  });
+
+  Map<String, dynamic> toOffice() =>{
+    'address':address,
+    'phone':phone,
+  };
 }

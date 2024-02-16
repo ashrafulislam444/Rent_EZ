@@ -197,7 +197,7 @@ class _ShopScreenState extends State<ShopScreen> {
       //height:400,
       //width:500,
       child: ListView.separated(
-        itemCount: 30,
+        itemCount: 5,
         primary: false,
         shrinkWrap: true,
         scrollDirection: Axis.vertical,

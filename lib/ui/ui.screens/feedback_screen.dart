@@ -1,7 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 
@@ -14,12 +16,12 @@ class FeedbackScreen extends StatefulWidget {
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
 
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _feedbackcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
   void dispose() {
-    _controller.dispose();
+    _feedbackcontroller.dispose();
     super.dispose();
   }
 
@@ -52,6 +54,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   AlertDialog get feedbackMessage{
     return AlertDialog(
         content: SingleChildScrollView(
+
           key: _formKey,
           scrollDirection:Axis.vertical,
           child: Column(
@@ -87,7 +90,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               const SizedBox(height: 20,),
 
               TextFormField(
-                controller: _controller,
+                controller: _feedbackcontroller,
                 keyboardType: TextInputType.multiline,
                 decoration: const InputDecoration(
                   hintText: 'Enter your feedback here',
@@ -109,6 +112,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         ),
       
       actions: [
+
         TextButton(
           child: const Text('Cancel'),
             onPressed: () => Navigator.pop(context),
@@ -116,25 +120,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
         TextButton(
           child: const Text('Send'),
-          onPressed:() async{
-            if(_formKey.currentState!.validate()){
-              String message;
+          onPressed:() {
+            final message = _feedbackcontroller.text;
+            createUser(message: message);
 
-              try{
-                final collection = FirebaseFirestore.instance.collection('feedback');
-                await collection.doc().set({
-                  'timestamp':FieldValue.serverTimestamp(),
-                  'feedback':_controller.text,
-                });
-                message ='Feedback sent successfully';
-
-              } catch(e){
-                message= 'Error when sending feedback';
-              }
-
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message),));
-              Navigator.pop(context);
-            }
           }
         ),
        ],
@@ -143,7 +132,47 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
+  Future createUser({required String message}) async{
+
+    try {
+      final docUser = FirebaseFirestore.instance.collection('feedback').doc();
+      showToast(message: " Feedback Successfully Send");
 
 
+      final user = User(
+        message:message,
+      );
+
+      final json = user.toJson();
+
+      //Create document and write data to Firebase
+      await docUser.set(json);
+
+    } catch (e) {
+      showToast(message: 'some error occurred ');
+
+    }
+
+    //Reference to document
+    //final docUser = FirebaseFirestore.instance.collection('feedback').doc();
+
+
+
+    
+  }
+}
+
+//create a model object
+
+class User{
+  final String message;
+
+  User({
+    required this.message,
+});
+
+  Map<String, dynamic> toJson() =>{
+    'message':message,
+  };
 
 }

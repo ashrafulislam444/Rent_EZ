@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class ShopAddDetails extends StatefulWidget {
@@ -9,6 +11,27 @@ class ShopAddDetails extends StatefulWidget {
 }
 
 class _ShopAddDetailsState extends State<ShopAddDetails> {
+
+
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController shopRentController = TextEditingController();
+  final TextEditingController shopNoController = TextEditingController();
+  final TextEditingController roadNoController = TextEditingController();
+  final TextEditingController areaDetailsController = TextEditingController();
+
+
+  @override
+  void dispose(){
+    descriptionController.dispose();
+    shopRentController.dispose();
+    shopNoController.dispose();
+    roadNoController.dispose();
+    areaDetailsController.dispose();
+    super.dispose();
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +67,7 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: descriptionController,
                       decoration: InputDecoration(
                           hintText: 'Description'
                       ),
@@ -54,6 +78,8 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: shopRentController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           hintText: 'Shop Rent'
                       ),
@@ -64,7 +90,7 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
-                      keyboardType: TextInputType.number,
+                      controller: shopNoController,
                       decoration: InputDecoration(
                           hintText: 'Shop no.'
                       ),
@@ -75,6 +101,7 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: roadNoController,
                       keyboardType:TextInputType.number,
                       decoration: InputDecoration(
                           hintText: 'Road No.'
@@ -86,8 +113,43 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: areaDetailsController,
                       decoration: InputDecoration(
                           hintText: 'Area Details'
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 5,),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final user = User(
+                          description: descriptionController.text,
+                          shopRent: int.parse(shopRentController.text),
+                          shopNo: shopNoController.text,
+                          roadNo:int.parse(roadNoController.text),
+                          areaDetails:areaDetailsController.text,
+
+                        );
+
+                        shopAddDetails(user);
+
+                      },
+                      child: const Text('Submit',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.green,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
                       ),
                     ),
                   ),
@@ -105,4 +167,45 @@ class _ShopAddDetailsState extends State<ShopAddDetails> {
 
     );
   }
+
+  Future shopAddDetails (User user) async {
+
+    try {
+      final docUser = FirebaseFirestore.instance.collection('Shop Add Details').doc();
+      showToast(message: " Submit Successful");
+
+      final shop = user.toShop();
+      await docUser.set(shop);
+
+    } catch (e) {
+      showToast(message: 'some error occurred ');
+    }
+
+  }
+}
+
+
+class User{
+  final String description;
+  final int shopRent;
+  final String shopNo;
+  final int roadNo;
+  final String areaDetails;
+
+
+  User({
+    required this.description,
+    required this.shopRent,
+    required this.shopNo,
+    required this.roadNo,
+    required this.areaDetails,
+  });
+
+  Map<String, dynamic> toShop() =>{
+    'description':description,
+    'shopRent':shopRent,
+    'shopNo':shopNo,
+    'roadNo':roadNo,
+    'areaDetails':areaDetails,
+  };
 }

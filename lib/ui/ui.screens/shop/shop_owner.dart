@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.screens/shop/shop_add_details.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
@@ -10,6 +12,20 @@ class ShopOwner extends StatefulWidget {
 }
 
 class _ShopOwnerState extends State<ShopOwner> {
+
+
+
+  final TextEditingController addressController =TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    addressController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +92,7 @@ class _ShopOwnerState extends State<ShopOwner> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: TextFormField(
+                      controller: addressController,
                       decoration: InputDecoration(
                           hintText: 'Address'
                       ),
@@ -85,48 +102,110 @@ class _ShopOwnerState extends State<ShopOwner> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: TextFormField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
                       decoration:InputDecoration(
                         hintText: 'Phone',
                       ),
                     ),
                   ),
 
+
                   const SizedBox(height: 5,),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,MaterialPageRoute(
-                          builder:(context) => const ShopAddDetails()),
-                      );
-                    },
-                    child:const Text('Add Details',style: TextStyle(
-                      fontSize:17,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final user = User(
+                          address:addressController.text,
+                          phone:int.parse(phoneController.text),
+                        );
 
-                    style: ElevatedButton.styleFrom(
-                      //padding: EdgeInsets.all(5.0),
-                      fixedSize: Size(100,50),
-                      elevation: 5,
-                      primary: Colors.blueGrey,
-                      onPrimary: Colors.white,
-                      side: BorderSide(color: Colors.black26,width:2),
+                        shopOwner(user);
+                        //Navigator.pop(context);
 
+                      },
+                      child: const Text('Submit',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.green,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 50,),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context,MaterialPageRoute(
+                            builder:(context) => const ShopAddDetails()),
+                        );
+                      },
+                      child:const Text('Add Details',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.blueGrey,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-
           ),
-
         ),
-
-
       ),
-
-
 
     );
   }
+
+
+  Future shopOwner (User user) async {
+
+    try {
+      final docUser = FirebaseFirestore.instance.collection('Shop Owner').doc();
+      showToast(message: " Submit Successful");
+
+      final shop = user.toShop();
+      await docUser.set(shop);
+
+    } catch (e) {
+      showToast(message: 'some error occurred ');
+    }
+
+  }
+}
+
+
+class User{
+  final String address;
+  final int phone;
+
+  User({
+    required this.address,
+    required this.phone,
+  });
+
+  Map<String, dynamic> toShop() =>{
+    'address':address,
+    'phone':phone,
+  };
 }

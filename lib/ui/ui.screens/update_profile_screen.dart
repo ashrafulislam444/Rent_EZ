@@ -5,6 +5,10 @@ import 'package:rent_ez/ui/ui.screens/settings_screen.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
+
+  //stateful:dynamic,
+  //stateless:static,
+
   const UpdateProfileScreen({super.key});
 
   @override
@@ -14,7 +18,7 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
 
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController(); // controller like a variable,data store
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();

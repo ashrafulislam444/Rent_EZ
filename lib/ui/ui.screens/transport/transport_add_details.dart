@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_ez/ui/global/common/toast.dart';
 import 'package:rent_ez/ui/ui.widgets/background_body.dart';
 
 class TransportAddDetails extends StatefulWidget {
@@ -9,6 +11,24 @@ class TransportAddDetails extends StatefulWidget {
 }
 
 class _TransportAddDetailsState extends State<TransportAddDetails> {
+
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController transportRentController = TextEditingController();
+  final TextEditingController transportNoController = TextEditingController();
+  final TextEditingController areaDetailsController = TextEditingController();
+
+
+  @override
+  void dispose(){
+    descriptionController.dispose();
+    transportRentController.dispose();
+    transportNoController.dispose();
+    areaDetailsController.dispose();
+    super.dispose();
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +64,7 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: descriptionController,
                       decoration: InputDecoration(
                           hintText: 'Description'
                       ),
@@ -54,6 +75,8 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
+                      controller: transportRentController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           hintText: 'Transport Rent'
                       ),
@@ -64,7 +87,7 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
-                      keyboardType: TextInputType.number,
+                      controller: transportNoController,
                       decoration: InputDecoration(
                           hintText: 'Transport no.'
                       ),
@@ -75,22 +98,46 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child:TextFormField(
-                      keyboardType:TextInputType.number,
-                      decoration: InputDecoration(
-                          hintText: 'Road No.'
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child:TextFormField(
+                      controller: areaDetailsController,
                       decoration: InputDecoration(
                           hintText: 'Area Details'
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 5,),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final user = User(
+                          description: descriptionController.text,
+                          transportRent: int.parse(transportRentController.text),
+                          transportNo:transportNoController.text,
+                          areaDetails:areaDetailsController.text,
+
+                        );
+
+                        transportAddDetails(user);
+
+                      },
+                      child: const Text('Submit',style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),),
+
+                      style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.all(5.0),
+                        fixedSize: Size(100,50),
+                        elevation: 5,
+                        primary: Colors.green,
+                        onPrimary: Colors.white,
+                        side: BorderSide(color: Colors.black26,width:2),
+
+                      ),
+                    ),
+                  ),
+
 
                 ],
               ),
@@ -105,4 +152,42 @@ class _TransportAddDetailsState extends State<TransportAddDetails> {
 
     );
   }
+
+  Future transportAddDetails (User user) async {
+
+    try {
+      final docUser = FirebaseFirestore.instance.collection('Transport Add Details').doc();
+      showToast(message: " Submit Successful");
+
+      final transport = user.toTransport();
+      await docUser.set(transport);
+
+    } catch (e) {
+      showToast(message: 'some error occurred ');
+    }
+
+  }
+
+}
+
+class User{
+  final String description;
+  final int transportRent;
+  final String transportNo;
+  final String areaDetails;
+
+
+  User({
+    required this.description,
+    required this.transportRent,
+    required this.transportNo,
+    required this.areaDetails,
+  });
+
+  Map<String, dynamic> toTransport() =>{
+    'description':description,
+    'garageRent':transportRent,
+    'garageNo':transportNo,
+    'areaDetails':areaDetails,
+  };
 }
